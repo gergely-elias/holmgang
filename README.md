@@ -1,12 +1,12 @@
 __Holmgång__ is a framework for evaluation of backgammon Match Equity Tables.  
 It allows you to run a large amount of matches between two __GNU Backgammon__ bots, each playing according to their own MET.  
-With the help of match outcomes and metrics based on those it is possible to reach a verdict about which of the two METs is superior.
+With the help of match outcomes and metrics based on those it is possible to reach a verdict about which of the two METs is superior.  
 
 ## How to run?
 First you have to create a directory where the logs of the matches will be saved.  
 A `config.yml` file containing the simulations parameters has to be created in your directory. For a valid example see the `example_setups` directory.  
 Then you can start running the simulations by issuing the following command from the root directory of __Holmgång__:  
-`bash single_leg_framework.sh path/to/your/directory/`  
+`bash framework.sh path/to/your/directory/`  
 
 ## How to interpret the output?
 In the printout you will see a count of matches won for both players.  

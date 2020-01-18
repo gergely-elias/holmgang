@@ -15,15 +15,23 @@ leg_dirs=(${conf_dir}leg*/)
 for leg_dir in "${leg_dirs[@]}"
 do
   date
-  echo "  [starting simulations $leg_dir]"
+  echo "  [starting simulation $leg_dir]"
   python3 gnubg_duel_simulation.py $leg_dir table | gnubg -t > /dev/null
   echo
 
   date
-  echo "  [starting aggregations $leg_dir]"
+  echo "  [starting match aggregation $leg_dir]"
   python3 gnubg_duel_simulation.py $leg_dir scorekeeper
   echo
 done
+
+if [ ${#leg_dirs[@]} = 2 ]
+then
+  date
+  echo "  [starting T-test calculation $conf_dir]"
+  python3 gnubg_duel_simulation.py $conf_dir stat
+  echo
+fi
 
 date
 echo "  [completed $conf_dir]"

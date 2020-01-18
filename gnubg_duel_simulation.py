@@ -3,6 +3,14 @@ import sys
 import os
 import re
 import glob
+import scipy.stats
+
+class bcolors:
+    BLUE = '\033[94m'
+    GREEN = '\033[92m'
+    RED = '\033[91m'
+    BOLD = '\033[1m'
+    ENDC = '\033[0m'
 
 def load_config():
   global work_dir, client_name, config
@@ -15,8 +23,8 @@ def load_config():
     raise Exception('no config.yml found in', work_dir)
   config = yaml.safe_load(open(work_dir + 'config.yml'))
   client_name = sys.argv[2]
-  if client_name not in ['table', 'client_0', 'client_1', 'scorekeeper', 'preparator']:
-    raise Exception('client name must be one of table/client_0/client_1/scorekeeper/preparator, invalid value:', client_name)
+  if client_name not in ['table', 'client_0', 'client_1', 'scorekeeper', 'preparator', 'stat']:
+    raise Exception('client name must be one of table/client_0/client_1/scorekeeper/preparator/stat, invalid value:', client_name)
 
 def check_config():
   if not config['config_version'] == 1:
@@ -70,7 +78,6 @@ def collect_and_aggregate_results():
   results = {'B': 0, 'W': 0, 'T': 0}
 
   for filename in filenames:
-    match_id = re.findall('\d+', filename)[-1]
     match_file = open(filename, 'r')
     lines = ''.join(match_file.readlines())
     pattern = re.compile('RE\[(?P<game_winner>[BW])\+(?P<points_won>\d+)R?\]')
@@ -78,11 +85,36 @@ def collect_and_aggregate_results():
     match_winner = get_match_winner(game_results, match_length)
     results[match_winner] += 1
 
+  print(bcolors.BLUE, end='')
   print('    ', 'leg score:')
   print('    ', config['client_0']['name'], '(White / player 0 / on top):', results['W'])
   print('    ', config['client_1']['name'], '(Black / player 1 / bottom):', results['B'])
   print('    ', 'Ties (scores 1a1a & 2a2a):', results['T'])
   print('    ', 'Total:', results['W'] + results['T'] / 2, '-', results['B'] + results['T'] / 2)
+  print(bcolors.ENDC, end='')
+
+def t_test():
+  matchpair_scores = []
+  for match_index in range(config['match_indices']['start'], config['match_indices']['end'] + 1):
+    filenames = [work_dir + 'leg' + leg_id + '/' + 'match' + str(match_index) + '.sgf' for leg_id in ['1', '2']]
+    match_length = config['match_length']
+    match_results = []
+
+    for filename in filenames:
+      match_file = open(filename, 'r')
+      lines = ''.join(match_file.readlines())
+      pattern = re.compile('RE\[(?P<game_winner>[BW])\+(?P<points_won>\d+)R?\]')
+      game_results = pattern.findall(lines)
+      match_winner = get_match_winner(game_results, match_length)
+      match_results.append(match_winner)
+
+    matchpair_scores.append('BTW'.index(match_results[0]) - 'BTW'.index(match_results[1]))
+  ttest_results = scipy.stats.ttest_1samp(matchpair_scores, 0)
+  print(bcolors.BLUE, end='')
+  print('    ', 'H0: aggregated scores\' average is 0')
+  print(bcolors.BOLD, end='')
+  print('    ', 'T-test result:', ttest_results)
+  print(bcolors.ENDC, end='')
 
 load_config()
 check_config()
@@ -92,5 +124,7 @@ elif (client_name == 'table'):
   start_table()
 elif (client_name == 'preparator'):
   prepare_legs()
+elif (client_name == 'stat'):
+  t_test()
 else:
   start_player(client_name)

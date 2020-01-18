@@ -1,0 +1,21 @@
+config_version: 1
+match_indices:
+  start: 1
+  end: 10
+superseed: 0
+rematches: false
+match_length: 5
+met_dir: /usr/share/gnubg/met/
+client_0: # 1st leg top - marked with W (white) in sgf file
+  name: Woolsey 0-ply
+  met_file: woolsey.xml
+  cube-ply: 0
+  checker-ply: 0
+  port: 9000
+client_1: # 1st leg bottom - marked with B (black) in sgf file
+  name: Zadeh 0-ply
+  met_file: zadeh.xml
+  cube-ply: 0
+  checker-ply: 0
+  port: 9001
+

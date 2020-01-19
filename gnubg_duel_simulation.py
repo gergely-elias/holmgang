@@ -4,6 +4,8 @@ import os
 import re
 import glob
 import scipy.stats
+import collections
+import itertools
 
 class bcolors:
     BLUE = '\033[94m'
@@ -95,6 +97,11 @@ def collect_and_aggregate_results():
 
 def t_test():
   matchpair_scores = []
+  matchpair_score_counts = collections.defaultdict(lambda: 0)
+  matchpair_outcome_score = {}
+  for match_outcomes in itertools.product('BTW', repeat = 2):
+    matchpair_outcome_score[''.join(match_outcomes)] = 'BTW'.index(match_outcomes[0]) - 'BTW'.index(match_outcomes[1])
+
   for match_index in range(config['match_indices']['start'], config['match_indices']['end'] + 1):
     filenames = [work_dir + 'leg' + leg_id + '/' + 'match' + str(match_index) + '.sgf' for leg_id in ['1', '2']]
     match_length = config['match_length']
@@ -108,13 +115,39 @@ def t_test():
       match_winner = get_match_winner(game_results, match_length)
       match_results.append(match_winner)
 
-    matchpair_scores.append('BTW'.index(match_results[0]) - 'BTW'.index(match_results[1]))
-  ttest_results = scipy.stats.ttest_1samp(matchpair_scores, 0)
+    matchpair_scores.append(matchpair_outcome_score[''.join(match_results)])
+    matchpair_score_counts[''.join(match_results)] += 1
+  t_statistics, p_value = scipy.stats.ttest_1samp(matchpair_scores, 0)
   print(bcolors.BLUE, end='')
   print('    ', 'H0: aggregated scores\' average is 0')
+  print_outcome_frequency_table(matchpair_score_counts)
+  print('    ', 't-statistics:', t_statistics)
   print(bcolors.BOLD, end='')
-  print('    ', 'T-test result:', ttest_results)
+  print('    ', 'p-value:', p_value)
+  if p_value < 0.05:
+    print(bcolors.RED, end='')
+    print('    ', 'H0 must be rejected ~', config['client_' + ('0' if t_statistics > 0 else '1')]['name'], 'is significantly stronger than', config['client_' + ('1' if t_statistics > 0 else '0')]['name'])
+  else:
+    print(bcolors.GREEN, end='')
+    print('    ', 'H0 cannot be rejected ~ none of the METs is significantly stronger than the other')
   print(bcolors.ENDC, end='')
+
+def print_outcome_frequency_table(matchpair_score_counts):
+  column_width = len(str(max(matchpair_score_counts.values()))) + 1
+  print('    ', 'Matchpair outcomes frequency table:')
+  print('      ', ' ', end='')
+  for match2_outcome in 'BTW':
+    print_length(match2_outcome, column_width)
+  print()
+  for match1_outcome in 'BTW':
+    print('      ', match1_outcome, end='')
+    for match2_outcome in 'BTW':
+      print_length(matchpair_score_counts[match1_outcome + match2_outcome], column_width)
+    print()
+
+def print_length(number, length):
+  converted_number = str(number)
+  print(' ' * (length - len(converted_number)) + converted_number, end='')
 
 load_config()
 check_config()

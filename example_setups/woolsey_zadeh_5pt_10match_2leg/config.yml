@@ -3,7 +3,7 @@ match_indices:
   start: 1
   end: 10
 superseed: 0
-rematches: false
+rematches: true
 match_length: 5
 met_dir: /usr/share/gnubg/met/
 client_0: # 1st leg top - marked with W (white) in sgf file

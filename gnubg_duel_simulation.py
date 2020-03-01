@@ -53,6 +53,7 @@ def start_player(player):
 def start_table():
   for player_id in ['0', '1']:
     print('set player ' + player_id + ' external 127.0.0.1:' + str(config['client_' + player_id]['port']))
+  print('set rng mersenne')
   for match_index in range(config['match_indices']['start'], config['match_indices']['end'] + 1):
     seed = match_index
     seed_shuffled = False
@@ -69,9 +70,10 @@ def get_match_winner(game_results, match_length):
   match_score_away = {'B': match_length, 'W': match_length}
   for (game_winner, scores_won) in game_results:
     match_score_away[game_winner] -= int(scores_won)
-    if ((match_score_away['B'] == 1 and match_score_away['W'] == 1) or (match_score_away['B'] == 2 and match_score_away['W'] == 2)):
-      return 'T'
-    elif match_score_away[game_winner] <= 0:
+    for tie_away in [2, 1]:
+      if (match_score_away['B'] == tie_away and match_score_away['W'] == tie_away):
+        return 'T'
+    if match_score_away[game_winner] <= 0:
       return game_winner
 
 def collect_and_aggregate_results():

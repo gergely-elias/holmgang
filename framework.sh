@@ -28,7 +28,7 @@ done
 if [ ${#leg_dirs[@]} = 2 ]
 then
   date
-  echo "  [starting T-test calculation $conf_dir]"
+  echo "  [starting t-test calculation $conf_dir]"
   python3 gnubg_duel_simulation.py $conf_dir stat
   echo
 fi

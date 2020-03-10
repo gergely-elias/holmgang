@@ -64,7 +64,7 @@ Note that the sum of rows in the crosstable equal 7, 0 and 3, matching the score
 ## Technical requirements, known limitations
 __Holmgång__ has only been tested on __Ubuntu 18.04__.  
 It needs __Python3__, __Bash__ and __GNU Backgammon__ installed.  
-As of March 2020, __GNU Backgammon__ has to be manually compiled, as there is not yet any official release which contains the fixes introduced with the following necessary revisions:  
+As of March 2020, __GNU Backgammon__ has to be manually compiled, as there is not yet any official release which contains necessary fixes introduced with the following revisions:  
 - `/gnubg/external.c` 1.101  
 - `/gnubg/play.c` 1.463  
 - `/gnubg/external.h` 1.25  

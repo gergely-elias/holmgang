@@ -16,6 +16,8 @@ class bcolors:
 
 def load_config():
   global work_dir, client_name, config
+  if not len(sys.argv) == 3:
+    raise Exception('needs two arguments (path and client name)', sys.argv)
   work_dir = sys.argv[1]
   if not work_dir.endswith('/'):
     raise Exception(work_dir, 'does not look like being a directory (it should end with "/")')

@@ -10,7 +10,7 @@ __Holmgång__ communicates with these instances through standard input/output - 
 First you have to create a directory where the logs of the matches will be saved.  
 A `config.yml` file containing the simulations parameters has to be created in your directory. For a valid example see the `example_setups` directory.  
 Then you can start running the simulations by issuing the following command from the root directory of __Holmgång__:  
-`bash framework.sh path/to/your/directory/`  
+`bash holmgang_linux_launcher.sh path/to/your/directory/`  
 
 #### Parameters in the `config.yml` file
 - `config_version` (integer) - current value: 1  

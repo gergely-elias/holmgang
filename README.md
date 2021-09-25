@@ -1,4 +1,4 @@
-__Holmgång__ is a framework for evaluation of backgammon Match Equity Tables.  
+__Holmgång__ is a collection of scripts for evaluation of backgammon Match Equity Tables.  
 It allows you to run a large amount of matches between two __GNU Backgammon__ bots, each playing according to their own MET.  
 With the help of match outcomes and metrics based on those it is possible to reach a verdict about which of the two METs is superior.  
 
@@ -34,7 +34,7 @@ There is a third count for ties. A match is considered drawn if the scores reach
 
 In case you run rematches, a one-sided t-test will be run to check whether one of the METs is playing significantly stronger than the other.  
 The results of matchpairs (which consist of a match and its rematch with the same dice sequence, but roles reversed) are displayed as a cross table. Rows correspond to results of first leg match, columns to results of second leg match. Abbreviations B, W and T stand for Black, White and Tie, respectively.  
-Every matchpair provides a score in range of -2 and 2 depending on the results of the two matches in the matchpair. The t-statistics is calculated on the sample of these scores. p-value is then calculated based on that and the degrees of freedom. Finally a verdict is printed that uses 0.05 as a threshold for significance.  
+Every matchpair provides a score in range of -2 and 2 depending on the results of the two matches in the matchpair (the sum of the scores of the two matches, where every win, draw and loss is worth 1, 0, and -1 point respectively). The t-statistic is calculated on the sample of these scores. p-value is then calculated based on that and the degrees of freedom. Finally a verdict is printed that uses 0.05 as a threshold for significance.  
 
 #### Example output of a single leg
 (The example below should match the output of the first leg for the example config provided)  
